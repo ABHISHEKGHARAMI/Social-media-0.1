@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 # declaring the model
 class Post(BaseModel):
-    title : str = Field(...,min_length=5,title='post title')
+    title : str 
     content : str 
 
 
