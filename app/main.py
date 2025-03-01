@@ -78,7 +78,7 @@ def delete_post(id: int ):
     post = post_by_id(id)
     index = post_index(id)
     if index is None:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f'the post with {id} not found to delete!!!')
     all_posts.pop(index)
     return {'message' : 'data deleted..'}
