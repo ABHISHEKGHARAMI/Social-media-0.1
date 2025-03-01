@@ -1,10 +1,17 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from typing import Optional
 
 # declaring the model
 class Post(BaseModel):
     title : str 
     content : str 
+    published : bool
+    rating : Optional[int] = None
+    
+# at the moment i am storing the posts in the memory but after that we will store the posts in the postgresql
+#  data base
+all_posts = []
 
 
 app = FastAPI()
@@ -21,7 +28,7 @@ async def root():
 @app.get('/posts')
 async def get_post():
     return {
-        "data" : "all the posts."
+        "data" : all_posts
     }
     
     
@@ -30,6 +37,9 @@ async def get_post():
 async def create_post(post : Post):
     print(post)
     print(post.dict())
+    # storing the post for the user
+    new_post = post.dict()
+    all_posts.append(new_post)
     return {
-        "data" : post
+        "data" : new_post
     }
