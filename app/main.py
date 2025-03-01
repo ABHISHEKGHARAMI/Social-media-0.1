@@ -20,6 +20,12 @@ def post_by_id(id):
     for p in all_posts:
         if p.id == id:
             return p
+
+#  function for the getting the index of a specific post
+def post_index(id):
+    for i , p in enumerate(all_posts):
+        if p['id'] == id:
+            return i
             
 
 
@@ -55,7 +61,7 @@ async def get_post(id: int ,response : Response):
     
     
 # create the all the post 
-@app.post('/post')
+@app.post('/post',status_code=status.HTTP_201_CREATED)
 async def create_post(post : Post):
     # storing the post for the user
     new_post = post.dict()
@@ -64,3 +70,16 @@ async def create_post(post : Post):
     return {
         "data" : new_post
     }
+    
+    
+# delete a post from the user
+@app.delete('/post/{id}',status_code=status.HTTP_204_NO_CONTENT)
+def delete_post(id: int ):
+    post = post_by_id(id)
+    index = post_index(id)
+    if index is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail=f'the post with {id} not found to delete!!!')
+    all_posts.pop(index)
+    return {'message' : 'data deleted..'}
+    
