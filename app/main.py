@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Optional
+from random import randrange
 
 # declaring the model
 class Post(BaseModel):
@@ -14,6 +15,14 @@ class Post(BaseModel):
 all_posts = []
 
 
+# function for the getting the post index id
+def post_by_id(id):
+    for p in all_posts:
+        if p.id == id:
+            return p
+            
+
+
 app = FastAPI()
 
 
@@ -25,20 +34,28 @@ async def root():
     
 
 # getting the all the post
-@app.get('/posts')
-async def get_post():
+@app.get('/post')
+async def get_posts():
     return {
         "data" : all_posts
     }
     
     
+# getting the post using the id
+@app.get('/post/{id}')
+async def get_post(id: int):
+    post = post_by_id(id)
+    return {
+        'data' : post
+    }
+    
+    
 # create the all the post 
-@app.post('/posts')
+@app.post('/post')
 async def create_post(post : Post):
-    print(post)
-    print(post.dict())
     # storing the post for the user
     new_post = post.dict()
+    new_post['id'] = randrange(0,100000000)
     all_posts.append(new_post)
     return {
         "data" : new_post
