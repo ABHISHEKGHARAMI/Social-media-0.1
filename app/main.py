@@ -74,12 +74,27 @@ async def create_post(post : Post):
     
 # delete a post from the user
 @app.delete('/post/{id}',status_code=status.HTTP_204_NO_CONTENT)
-def delete_post(id: int ):
+async def delete_post(id: int ):
     post = post_by_id(id)
     index = post_index(id)
     if index is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f'the post with {id} not found to delete!!!')
     all_posts.pop(index)
-    return {'message' : 'data deleted..'}
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+
+# this is put update for the user post
+@app.put('post/{id}')
+async def update_post(id: int, post : Post):
+    index = post_index(id)
+    if index is None:
+        raise HTTPException(status_code=status.HTTP_204_NO_CONTENT,
+                            detail=f'the post {id} not found!!')
+    
+    new_post_dict = post.dict()
+    new_post_dict['id'] = id
+    all_posts[index] = new_post_dict
+    return Response(status_code=status.HTTP_205_RESET_CONTENT)
     
