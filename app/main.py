@@ -70,7 +70,9 @@ async def get_posts():
 # getting the post using the id
 @app.get('/post/{id}')
 async def get_post(id: int ,response : Response):
-    post = post_by_id(id)
+    # post = post_by_id(id)
+    cursor.execute("""SELECT * FROM posts WHERE id = %s""",(str(id)))
+    post = cursor.fetchone()
     if post is None:
         # response.status_code = status.HTTP_404_NOT_FOUND
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
