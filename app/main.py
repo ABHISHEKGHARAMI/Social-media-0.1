@@ -59,8 +59,11 @@ async def root():
 # getting the all the post
 @app.get('/post')
 async def get_posts():
+    cursor.execute(""" SELECT * FROM posts """)
+    post = cursor.fetchall()
+    # print(post)
     return {
-        "data" : all_posts
+        "data" : post
     }
     
     
