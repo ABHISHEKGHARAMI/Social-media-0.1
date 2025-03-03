@@ -104,12 +104,16 @@ async def create_post(post : Post):
 # delete a post from the user
 @app.delete('/post/{id}',status_code=status.HTTP_204_NO_CONTENT)
 async def delete_post(id: int ):
-    post = post_by_id(id)
-    index = post_index(id)
-    if index is None:
+    # post = post_by_id(id)
+    # index = post_index(id)
+    cursor.execute(""" DELETE FROM posts WHERE id = %s RETURNING * """, (str(id),))
+    deleted_post = cursor.fetchone()
+    conn.commit()
+    
+    if deleted_post is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f'the post with {id} not found to delete!!!')
-    all_posts.pop(index)
+    # all_posts.pop(index)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
