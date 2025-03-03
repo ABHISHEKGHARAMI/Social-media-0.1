@@ -84,9 +84,16 @@ async def get_post(id: int ,response : Response):
 @app.post('/post',status_code=status.HTTP_201_CREATED)
 async def create_post(post : Post):
     # storing the post for the user
-    new_post = post.dict()
-    new_post['id'] = randrange(0,100000000)
-    all_posts.append(new_post)
+    # new_post = post.dict()
+    # new_post['id'] = randrange(0,100000000)
+    # all_posts.append(new_post)
+    cursor.execute(""" INSERT INTO posts (title,content,published) VALUES (%s,%s,%s) 
+                   RETURNING * """,
+                   (post.title,post.content,post.published))
+    new_post = cursor.fetchone()
+    
+    conn.commit()
+    
     return {
         "data" : new_post
     }
