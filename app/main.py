@@ -2,10 +2,23 @@ from fastapi import FastAPI , status , Response , HTTPException
 from pydantic import BaseModel
 from typing import Optional
 from random import randrange
+from sqlalchemy.orm import Session
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import time
+from . import models
+from .database import engine , SessionLocal
 
+
+
+# declaring the connection for the alchemy
+models.Base.metadata.create_all(bind=engine)
+
+
+app = FastAPI()
+       
+       
+       
 # declaring the model
 class Post(BaseModel):
     title : str 
@@ -46,7 +59,14 @@ def post_index(id):
             
 
 
-app = FastAPI()
+
+# for the db
+def get_db():
+   db = SessionLocal()
+   try:
+       yield db
+   finally:
+       db.close()
 
 
 @app.get('/')
@@ -54,6 +74,14 @@ async def root():
     return {
         'message' : 'hello world!!'
     }
+    
+# testing for the database session using the sqlalchemy
+@app.get('/sqlalchemy')
+async def get_alchemy(db : Session = Depends(get_db)):
+    return {
+        'message' : 'working'
+    }
+
     
 
 # getting the all the post
