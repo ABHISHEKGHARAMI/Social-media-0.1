@@ -79,17 +79,20 @@ async def root():
 # testing for the database session using the sqlalchemy
 @app.get('/sqlalchemy')
 async def get_alchemy(db : Session = Depends(get_db)):
+    post = db.query(models.Post).all()
+    # print(post)
     return {
-        'message' : 'working'
+        'message' : post
     }
 
     
 
 # getting the all the post
 @app.get('/post')
-async def get_posts():
-    cursor.execute(""" SELECT * FROM posts """)
-    post = cursor.fetchall()
+async def get_posts(db : Session = Depends(get_db)):
+    # cursor.execute(""" SELECT * FROM posts """)
+    # post = cursor.fetchall()
+    post = db.query(models.Post).all()
     # print(post)
     return {
         "data" : post
