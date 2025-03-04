@@ -116,18 +116,25 @@ async def get_post(id: int ,response : Response):
     
 # create the all the post 
 @app.post('/post',status_code=status.HTTP_201_CREATED)
-async def create_post(post : Post):
+async def create_post(post : Post, db : Session = Depends(get_db)):
     # storing the post for the user
     # new_post = post.dict()
     # new_post['id'] = randrange(0,100000000)
     # all_posts.append(new_post)
-    cursor.execute(""" INSERT INTO posts (title,content,published) VALUES (%s,%s,%s) 
-                   RETURNING * """,
-                   (post.title,post.content,post.published))
-    new_post = cursor.fetchone()
+    # cursor.execute(""" INSERT INTO posts (title,content,published) VALUES (%s,%s,%s) 
+    #                RETURNING * """,
+    #                (post.title,post.content,post.published))
+    # new_post = cursor.fetchone()
     
-    conn.commit()
+    # conn.commit()
+    # using the orm
     
+    # creating new post
+    new_post = models.Post(title=post.title,content=post.content,published=post.published)
+    # saving the instance of the data to the db
+    db.add(new_post)
+    db.commit()
+    db.refresh(new_post)
     return {
         "data" : new_post
     }
