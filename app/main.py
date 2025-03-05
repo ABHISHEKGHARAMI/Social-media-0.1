@@ -130,7 +130,8 @@ async def create_post(post : Post, db : Session = Depends(get_db)):
     # using the orm
     
     # creating new post
-    new_post = models.Post(title=post.title,content=post.content,published=post.published)
+    # new_post = models.Post(title=post.title,content=post.content,published=post.published)
+    new_post = models.Post(**post.dict())
     # saving the instance of the data to the db
     db.add(new_post)
     db.commit()
