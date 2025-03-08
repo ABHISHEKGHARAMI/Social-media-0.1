@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import time
-from . import models
+from . import models , schemas
 from .database import engine , SessionLocal
 
 
@@ -20,12 +20,7 @@ app = FastAPI()
        
        
        
-# declaring the model
-class Post(BaseModel):
-    title : str 
-    content : str 
-    published : bool
-    # rating : Optional[int] = None
+
     
 # at the moment i am storing the posts in the memory but after that we will store the posts in the postgresql
 #  data base
@@ -117,7 +112,7 @@ async def get_post(id: int, db: Session = Depends(get_db)):
     
 # create the all the post 
 @app.post('/post',status_code=status.HTTP_201_CREATED)
-async def create_post(post : Post, db : Session = Depends(get_db)):
+async def create_post(post : schemas.Post , db : Session = Depends(get_db)):
     # storing the post for the user
     # new_post = post.dict()
     # new_post['id'] = randrange(0,100000000)
@@ -166,7 +161,7 @@ async def delete_post(id: int,  db: Session = Depends(get_db)):
 
 # this is put update for the user post
 @app.put('/post/{id}')
-async def update_post(id: int, updated_post : Post, db: Session = Depends(get_db)):
+async def update_post(id: int, updated_post : schemas.Post, db: Session = Depends(get_db)):
     # index = post_index(id)
     # cursor.execute(""" UPDATE posts SET title=%s , content=%s , published=%s WHERE id = %s RETURNING * """,
     #                (post.title,post.content,post.published,str(id)))
