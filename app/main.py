@@ -112,7 +112,7 @@ async def get_post(id: int, db: Session = Depends(get_db)):
     
 # create the all the post 
 @app.post('/post',status_code=status.HTTP_201_CREATED)
-async def create_post(post : schemas.Post , db : Session = Depends(get_db)):
+async def create_post(post : schemas.PostCreate , db : Session = Depends(get_db)):
     # storing the post for the user
     # new_post = post.dict()
     # new_post['id'] = randrange(0,100000000)
@@ -161,7 +161,7 @@ async def delete_post(id: int,  db: Session = Depends(get_db)):
 
 # this is put update for the user post
 @app.put('/post/{id}')
-async def update_post(id: int, updated_post : schemas.Post, db: Session = Depends(get_db)):
+async def update_post(id: int, updated_post : schemas.PostCreate , db: Session = Depends(get_db)):
     # index = post_index(id)
     # cursor.execute(""" UPDATE posts SET title=%s , content=%s , published=%s WHERE id = %s RETURNING * """,
     #                (post.title,post.content,post.published,str(id)))
