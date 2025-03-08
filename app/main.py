@@ -71,14 +71,6 @@ async def root():
         'message' : 'hello world!!'
     }
     
-# testing for the database session using the sqlalchemy
-@app.get('/sqlalchemy')
-async def get_alchemy(db : Session = Depends(get_db)):
-    post = db.query(models.Post).all()
-    # print(post)
-    return {
-        'message' : post
-    }
 
     
 
