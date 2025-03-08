@@ -166,7 +166,7 @@ async def delete_post(id: int,  db: Session = Depends(get_db)):
 
 # this is put update for the user post
 @app.put('/post/{id}')
-async def update_post(id: int, post : Post, db: Session = Depends(get_db)):
+async def update_post(id: int, updated_post : Post, db: Session = Depends(get_db)):
     # index = post_index(id)
     # cursor.execute(""" UPDATE posts SET title=%s , content=%s , published=%s WHERE id = %s RETURNING * """,
     #                (post.title,post.content,post.published,str(id)))
@@ -177,7 +177,7 @@ async def update_post(id: int, post : Post, db: Session = Depends(get_db)):
     
     post = post_query.first()
     
-    if post is None:
+    if post == None:
         raise HTTPException(status_code=status.HTTP_204_NO_CONTENT,
                             detail=f'the post {id} not found!!')
     
@@ -187,7 +187,7 @@ async def update_post(id: int, post : Post, db: Session = Depends(get_db)):
     # return Response(status_code=status.HTTP_205_RESET_CONTENT)
     # print(post)
     # print(updated_data)
-    post_query.update(post.dict() ,  synchronize_session=False)
+    post_query.update(updated_post.dict(),  synchronize_session=False)
     
     db.commit()
     
