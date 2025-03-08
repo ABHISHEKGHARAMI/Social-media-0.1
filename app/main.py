@@ -178,7 +178,7 @@ async def update_post(id: int, updated_post : Post, db: Session = Depends(get_db
     post = post_query.first()
     
     if post == None:
-        raise HTTPException(status_code=status.HTTP_204_NO_CONTENT,
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f'the post {id} not found!!')
     
     # new_post_dict = post.dict()
