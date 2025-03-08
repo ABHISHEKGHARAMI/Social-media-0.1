@@ -1,6 +1,6 @@
 from fastapi import FastAPI , status , Response , HTTPException , Depends
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional , List
 from random import randrange
 from sqlalchemy.orm import Session
 import psycopg2
@@ -75,7 +75,7 @@ async def root():
     
 
 # getting the all the post
-@app.get('/post')
+@app.get('/post', response_model= List[schemas.Post])
 async def get_posts(db : Session = Depends(get_db)):
     # cursor.execute(""" SELECT * FROM posts """)
     # post = cursor.fetchall()
@@ -86,7 +86,7 @@ async def get_posts(db : Session = Depends(get_db)):
     
     
 # getting the post using the id
-@app.get('/post/{id}')
+@app.get('/post/{id}',response_model= schemas.Post)
 async def get_post(id: int, db: Session = Depends(get_db)):
     # post = post_by_id(id)
     # cursor.execute("""SELECT * FROM posts WHERE id = %s""",(str(id)))
@@ -146,7 +146,7 @@ async def delete_post(id: int,  db: Session = Depends(get_db)):
 
 
 # this is put update for the user post
-@app.put('/post/{id}')
+@app.put('/post/{id}',response_model= schemas.Post)
 async def update_post(id: int, updated_post : schemas.PostCreate , db: Session = Depends(get_db)):
     # index = post_index(id)
     # cursor.execute(""" UPDATE posts SET title=%s , content=%s , published=%s WHERE id = %s RETURNING * """,
