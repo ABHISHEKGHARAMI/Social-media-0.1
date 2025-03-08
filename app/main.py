@@ -99,7 +99,7 @@ async def get_post(id: int, db: Session = Depends(get_db)):
     return  post
     
 # create the all the post 
-@app.post('/post',status_code=status.HTTP_201_CREATED)
+@app.post('/post',status_code=status.HTTP_201_CREATED, response_model= schemas.Post)
 async def create_post(post : schemas.PostCreate , db : Session = Depends(get_db)):
     # storing the post for the user
     # new_post = post.dict()
