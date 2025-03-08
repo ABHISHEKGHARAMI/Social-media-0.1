@@ -81,9 +81,8 @@ async def get_posts(db : Session = Depends(get_db)):
     # post = cursor.fetchall()
     post = db.query(models.Post).all()
     # print(post)
-    return {
-        "data" : post
-    }
+    return  post
+    
     
     
 # getting the post using the id
@@ -97,10 +96,7 @@ async def get_post(id: int, db: Session = Depends(get_db)):
         # response.status_code = status.HTTP_404_NOT_FOUND
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f'post of {id} not found!!')
-    return {
-        'data' : post
-    }
-    
+    return  post
     
 # create the all the post 
 @app.post('/post',status_code=status.HTTP_201_CREATED)
@@ -124,9 +120,7 @@ async def create_post(post : schemas.PostCreate , db : Session = Depends(get_db)
     db.add(new_post)
     db.commit()
     db.refresh(new_post)
-    return {
-        "data" : new_post
-    }
+    return  new_post
     
     
 # delete a post from the user
@@ -178,5 +172,5 @@ async def update_post(id: int, updated_post : schemas.PostCreate , db: Session =
     
     db.commit()
     
-    return {'post' : post_query.first()}
+    return  post_query.first()
     

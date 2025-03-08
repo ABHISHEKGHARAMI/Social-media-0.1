@@ -11,3 +11,9 @@ class PostBase(BaseModel):
 # create the post for the base
 class PostCreate(PostBase):
     pass
+
+# designing the response back for the user to restrict the user to get extra information
+class Post(BaseModel):
+    title : str
+    content : str
+    published : bool
