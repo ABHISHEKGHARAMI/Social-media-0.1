@@ -30,4 +30,9 @@ class Post(PostBase):
 class UserCreate(BaseModel):
     email : EmailStr
     password : str
+    
+# response schema for the user
+class UserOut(BaseModel):
+    id : int
+    email : EmailStr
         
