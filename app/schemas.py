@@ -1,5 +1,5 @@
 # declaring all the database schemas 
-from pydantic import BaseModel
+from pydantic import BaseModel , EmailStr
 from datetime import datetime
 
 # declaring the model
@@ -24,4 +24,10 @@ class Post(PostBase):
     class Config:
         from_attributes = True  # Replaces `orm_mode = True` in Pydantic v2
         extra = "ignore"
+        
+        
+# create the user for the application
+class UserCreate(BaseModel):
+    email : EmailStr
+    password : str
         

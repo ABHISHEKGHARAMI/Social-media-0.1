@@ -173,4 +173,11 @@ async def update_post(id: int, updated_post : schemas.PostCreate , db: Session =
     db.commit()
     
     return  post_query.first()
+
+
+
+# creating new user 
+@app.post('/users',status_code=status.HTTP_201_CREATED)
+async def create_user(db: Session = Depends(get_db)):
+    pass
     
