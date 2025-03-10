@@ -6,9 +6,11 @@ from ..database import engine , get_db
 
 
 # create the router object for the app
-router = APIRouter()
+router = APIRouter(
+    prefix="/post"
+)
 # getting the all the post
-@router.get('/post', response_model=List[schemas.Post])
+@router.get('/', response_model=List[schemas.Post])
 async def get_posts(db: Session = Depends(get_db)):
     # cursor.execute(""" SELECT * FROM posts """)
     # post = cursor.fetchall()
@@ -18,7 +20,7 @@ async def get_posts(db: Session = Depends(get_db)):
 
 
 # getting the post using the id
-@router.get('/post/{id}', response_model=schemas.Post)
+@router.get('/{id}', response_model=schemas.Post)
 async def get_post(id: int, db: Session = Depends(get_db)):
     # post = post_by_id(id)
     # cursor.execute("""SELECT * FROM posts WHERE id = %s""",(str(id)))
@@ -33,7 +35,7 @@ async def get_post(id: int, db: Session = Depends(get_db)):
 # create the all the post
 
 
-@router.post('/post', status_code=status.HTTP_201_CREATED, response_model=schemas.Post)
+@router.post('/', status_code=status.HTTP_201_CREATED, response_model=schemas.Post)
 async def create_post(post: schemas.PostCreate, db: Session = Depends(get_db)):
     # storing the post for the user
     # new_post = post.dict()
@@ -58,7 +60,7 @@ async def create_post(post: schemas.PostCreate, db: Session = Depends(get_db)):
 
 
 # delete a post from the user
-@router.delete('/post/{id}', status_code=status.HTTP_204_NO_CONTENT)
+@router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_post(id: int,  db: Session = Depends(get_db)):
     # post = post_by_id(id)
     # index = post_index(id)
@@ -79,7 +81,7 @@ async def delete_post(id: int,  db: Session = Depends(get_db)):
 
 
 # this is put update for the user post
-@router.put('/post/{id}', response_model=schemas.Post)
+@router.put('/{id}', response_model=schemas.Post)
 async def update_post(id: int, updated_post: schemas.PostCreate, db: Session = Depends(get_db)):
     # index = post_index(id)
     # cursor.execute(""" UPDATE posts SET title=%s , content=%s , published=%s WHERE id = %s RETURNING * """,

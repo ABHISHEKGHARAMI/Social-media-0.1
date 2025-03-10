@@ -6,9 +6,11 @@ from ..database import engine, get_db
 
 
 # creating the router instance
-router = APIRouter()
+router = APIRouter(
+    prefix='/users'
+)
 # creating new user
-@router.post('/users', status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut)
+@router.post('/', status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut)
 async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     # hashed the password
     hashed_password = utils.hash(user.password)
@@ -25,7 +27,7 @@ async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
 
 # get the specific user data using the id
-@router.get('/users/{id}', response_model=schemas.UserOut)
+@router.get('/{id}', response_model=schemas.UserOut)
 async def get_user(id: int, db: Session = Depends(get_db)):
     # query the db model for the specific user
     user = db.query(models.User).filter(models.User.id == id).first()
