@@ -1,18 +1,17 @@
 from fastapi import FastAPI , status , Response , HTTPException , Depends
 from pydantic import BaseModel
-from passlib.context import CryptContext
 from typing import Optional , List
 from random import randrange
 from sqlalchemy.orm import Session
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import time
-from . import models , schemas
+from . import models , schemas , utils
 from .database import engine , SessionLocal
 
 
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated = "auto")
+
 # declaring the connection for the alchemy
 models.Base.metadata.create_all(bind=engine)
 
@@ -181,7 +180,7 @@ async def update_post(id: int, updated_post : schemas.PostCreate , db: Session =
 @app.post('/users',status_code=status.HTTP_201_CREATED , response_model= schemas.UserOut)
 async def create_user(user : schemas.UserCreate,db: Session = Depends(get_db)):
     # hashed the password
-    hashed_password = pwd_context.hash(user.password)
+    hashed_password = utils.hash(user.password)
     user.password = hashed_password
     # creating new user
     new_user = models.User(**user.dict())
