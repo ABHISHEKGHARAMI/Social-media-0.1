@@ -7,7 +7,8 @@ from ..database import engine , get_db
 
 # create the router object for the app
 router = APIRouter(
-    prefix="/post"
+    prefix="/post",
+    tags = ['Post']
 )
 # getting the all the post
 @router.get('/', response_model=List[schemas.Post])

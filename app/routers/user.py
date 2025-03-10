@@ -7,7 +7,8 @@ from ..database import engine, get_db
 
 # creating the router instance
 router = APIRouter(
-    prefix='/users'
+    prefix='/users',
+    tags = ['User']
 )
 # creating new user
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut)
