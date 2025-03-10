@@ -8,6 +8,7 @@ from psycopg2.extras import RealDictCursor
 import time
 from . import models , schemas , utils
 from .database import engine , SessionLocal
+from .routers import user, post
 
 
 
@@ -41,166 +42,24 @@ while True:
         time.sleep(2)
 
 
-# function for the getting the post index id
-def post_by_id(id):
-    for p in all_posts:
-        if p.id == id:
-            return p
+# # function for the getting the post index id
+# def post_by_id(id):
+#     for p in all_posts:
+#         if p.id == id:
+#             return p
 
-#  function for the getting the index of a specific post
-def post_index(id):
-    for i , p in enumerate(all_posts):
-        if p['id'] == id:
-            return i
+# #  function for the getting the index of a specific post
+# def post_index(id):
+#     for i , p in enumerate(all_posts):
+#         if p['id'] == id:
+#             return i
             
 
 
-
-# for the db
-def get_db():
-   db = SessionLocal()
-   try:
-       yield db
-   finally:
-       db.close()
-
-
-@app.get('/')
-async def root():
-    return {
-        'message' : 'hello world!!'
-    }
     
 
-    
-
-# getting the all the post
-@app.get('/post', response_model= List[schemas.Post])
-async def get_posts(db : Session = Depends(get_db)):
-    # cursor.execute(""" SELECT * FROM posts """)
-    # post = cursor.fetchall()
-    post = db.query(models.Post).all()
-    # print(post)
-    return  post
-    
-    
-    
-# getting the post using the id
-@app.get('/post/{id}',response_model= schemas.Post)
-async def get_post(id: int, db: Session = Depends(get_db)):
-    # post = post_by_id(id)
-    # cursor.execute("""SELECT * FROM posts WHERE id = %s""",(str(id)))
-    # post = cursor.fetchone()
-    post = db.query(models.Post).filter(models.Post.id == id).first()
-    if post is None:
-        # response.status_code = status.HTTP_404_NOT_FOUND
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f'post of {id} not found!!')
-    return  post
-    
-# create the all the post 
-@app.post('/post',status_code=status.HTTP_201_CREATED, response_model= schemas.Post)
-async def create_post(post : schemas.PostCreate , db : Session = Depends(get_db)):
-    # storing the post for the user
-    # new_post = post.dict()
-    # new_post['id'] = randrange(0,100000000)
-    # all_posts.append(new_post)
-    # cursor.execute(""" INSERT INTO posts (title,content,published) VALUES (%s,%s,%s) 
-    #                RETURNING * """,
-    #                (post.title,post.content,post.published))
-    # new_post = cursor.fetchone()
-    
-    # conn.commit()
-    # using the orm
-    
-    # creating new post
-    # new_post = models.Post(title=post.title,content=post.content,published=post.published)
-    new_post = models.Post(**post.dict())
-    # saving the instance of the data to the db
-    db.add(new_post)
-    db.commit()
-    db.refresh(new_post)
-    return  new_post
-    
-    
-# delete a post from the user
-@app.delete('/post/{id}',status_code=status.HTTP_204_NO_CONTENT)
-async def delete_post(id: int,  db: Session = Depends(get_db)):
-    # post = post_by_id(id)
-    # index = post_index(id)
-    # cursor.execute(""" DELETE FROM posts WHERE id = %s RETURNING * """, (str(id),))
-    # deleted_post = cursor.fetchone()
-    # conn.commit()
-    
-    deleted_post = db.query(models.Post).filter(models.Post.id == id)
-    
-    if deleted_post.first() is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f'the post with {id} not found to delete!!!')
-    # all_posts.pop(index)
-    # delete the post 
-    deleted_post.delete(synchronize_session=False)
-    db.commit()
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+# include the router path for the user and post
+app.include_router(post.router)
+app.include_router(user.router)
 
 
-
-# this is put update for the user post
-@app.put('/post/{id}',response_model= schemas.Post)
-async def update_post(id: int, updated_post : schemas.PostCreate , db: Session = Depends(get_db)):
-    # index = post_index(id)
-    # cursor.execute(""" UPDATE posts SET title=%s , content=%s , published=%s WHERE id = %s RETURNING * """,
-    #                (post.title,post.content,post.published,str(id)))
-    
-    # updated_post = cursor.fetchone()
-    # conn.commit()
-    post_query = db.query(models.Post).filter(models.Post.id == id)
-    
-    post = post_query.first()
-    
-    if post == None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f'the post {id} not found!!')
-    
-    # new_post_dict = post.dict()
-    # new_post_dict['id'] = id
-    # all_posts[index] = new_post_dict
-    # return Response(status_code=status.HTTP_205_RESET_CONTENT)
-    # print(post)
-    # print(updated_data)
-    post_query.update(updated_post.dict(),  synchronize_session=False)
-    
-    db.commit()
-    
-    return  post_query.first()
-
-
-
-# creating new user 
-@app.post('/users',status_code=status.HTTP_201_CREATED , response_model= schemas.UserOut)
-async def create_user(user : schemas.UserCreate,db: Session = Depends(get_db)):
-    # hashed the password
-    hashed_password = utils.hash(user.password)
-    user.password = hashed_password
-    # creating new user
-    new_user = models.User(**user.dict())
-    # saving it to database
-    db.add(new_user)
-    # commit the db
-    db.commit()
-    # refresh the database
-    db.refresh(new_user)
-    return new_user
-    
-
-
-# get the specific user data using the id
-@app.get('/users/{id}',response_model=schemas.UserOut)
-async def get_user(id : int , db: Session = Depends(get_db)):
-    # query the db model for the specific user
-    user = db.query(models.User).filter(models.User.id == id ).first()
-    if user is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f'user of {id} does not exist in the db.')
-    # else return the user
-    return user
