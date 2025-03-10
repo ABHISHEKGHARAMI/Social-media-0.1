@@ -192,4 +192,15 @@ async def create_user(user : schemas.UserCreate,db: Session = Depends(get_db)):
     db.refresh(new_user)
     return new_user
     
-    
+
+
+# get the specific user data using the id
+@app.get('/users/{id}',response_model=schemas.UserOut)
+async def get_user(id : int , db: Session = Depends(get_db)):
+    # query the db model for the specific user
+    user = db.query(models.User).filter(models.User.id == id ).first()
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f'user of {id} does not exist in the db.')
+    # else return the user
+    return user
