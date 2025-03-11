@@ -1,4 +1,4 @@
-from .. import models, schemas
+from .. import models, schemas , oauth2
 from fastapi import FastAPI, status, Response, HTTPException, Depends , APIRouter
 from typing import Optional, List
 from sqlalchemy.orm import Session
@@ -37,7 +37,7 @@ async def get_post(id: int, db: Session = Depends(get_db)):
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=schemas.Post)
-async def create_post(post: schemas.PostCreate, db: Session = Depends(get_db)):
+async def create_post(post: schemas.PostCreate, db: Session = Depends(get_db),user_id :int = Depends(oauth2.get_current_user)):
     # storing the post for the user
     # new_post = post.dict()
     # new_post['id'] = randrange(0,100000000)
@@ -62,7 +62,7 @@ async def create_post(post: schemas.PostCreate, db: Session = Depends(get_db)):
 
 # delete a post from the user
 @router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
-async def delete_post(id: int,  db: Session = Depends(get_db)):
+async def delete_post(id: int,  db: Session = Depends(get_db), user_id: int = Depends(oauth2.get_current_user)):
     # post = post_by_id(id)
     # index = post_index(id)
     # cursor.execute(""" DELETE FROM posts WHERE id = %s RETURNING * """, (str(id),))
@@ -83,7 +83,7 @@ async def delete_post(id: int,  db: Session = Depends(get_db)):
 
 # this is put update for the user post
 @router.put('/{id}', response_model=schemas.Post)
-async def update_post(id: int, updated_post: schemas.PostCreate, db: Session = Depends(get_db)):
+async def update_post(id: int, updated_post: schemas.PostCreate, db: Session = Depends(get_db), user_id: int = Depends(oauth2.get_current_user)):
     # index = post_index(id)
     # cursor.execute(""" UPDATE posts SET title=%s , content=%s , published=%s WHERE id = %s RETURNING * """,
     #                (post.title,post.content,post.published,str(id)))
