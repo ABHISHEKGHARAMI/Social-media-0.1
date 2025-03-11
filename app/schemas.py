@@ -1,6 +1,7 @@
 # declaring all the database schemas 
 from pydantic import BaseModel , EmailStr
 from datetime import datetime
+from typing import Optional
 
 # declaring the model
 class PostBase(BaseModel):
@@ -41,4 +42,15 @@ class UserOut(BaseModel):
 class UserLogin(BaseModel):
     email : EmailStr
     password : str
+    
+    
         
+# Schema token for the oauth2
+class Token(BaseModel):
+    access_token : str
+    token_type : str
+    
+# schema for token data
+class TokenData(BaseModel):
+    id : Optional[str] = None
+    
