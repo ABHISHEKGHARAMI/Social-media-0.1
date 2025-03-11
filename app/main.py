@@ -8,7 +8,7 @@ from psycopg2.extras import RealDictCursor
 import time
 from . import models , schemas , utils
 from .database import engine , SessionLocal
-from .routers import user, post
+from .routers import user, post , auth
 
 
 
@@ -61,5 +61,6 @@ while True:
 # include the router path for the user and post
 app.include_router(post.router)
 app.include_router(user.router)
+app.include_router(auth.router)
 
 

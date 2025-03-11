@@ -36,4 +36,9 @@ class UserOut(BaseModel):
     id : int
     email : EmailStr
     created_at : datetime
+    
+# schema for the user login
+class UserLogin(BaseModel):
+    email : EmailStr
+    password : str
         
