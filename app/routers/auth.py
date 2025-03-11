@@ -17,11 +17,11 @@ async def login( user_credential : OAuth2PasswordRequestForm = Depends() ,db : S
     
     # if user does not exist raise an error
     if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
                             detail=f'Invalid credentials')
     # checking password
     if not utils.check(user_credential.password,user.password):
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
                             detail="Invalid credential.")
         
     # at this point user is valid then request the token will create then return the token
