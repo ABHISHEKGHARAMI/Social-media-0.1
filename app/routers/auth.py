@@ -2,7 +2,7 @@
 from fastapi import FastAPI , Depends , status , HTTPException , APIRouter , Response
 from sqlalchemy.orm import Session
 from ..database import get_db
-from .. import schemas , models , utils
+from .. import schemas , models , utils , oauth2
 
 router = APIRouter(
     tags=['Authentication']
@@ -24,7 +24,8 @@ async def login( user_credential : schemas.UserLogin,db : Session = Depends(get_
                             detail="Invalid credential.")
         
     # at this point user is valid then request the token will create then return the token
-    return {'token': 'user_token'}
+    access_token = oauth2.create_access_token(data={'user_id': user.id})
+    return {'token': access_token ,'token_type' : 'bearer'}
     
         
     
