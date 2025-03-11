@@ -9,7 +9,7 @@ from fastapi.security import OAuth2PasswordBearer
 # 1 . secret key
 # 2 . Algorithm
 # 3 . time for automatically signed out
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login')
+oauth2_schema = OAuth2PasswordBearer(tokenUrl='login')
 
 SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
 ALGORITHM = "HS256"
@@ -36,6 +36,11 @@ def verify_access_token(token : str , credential_exception):
     except JWTError : 
         raise credential_exception
     
+    return token_data
+    
 #  fetches current user
-def get_current_user(token : str):
-    pass
+def get_current_user(token : str = Depends(oauth2_schema)):
+    credential_exception = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                                         detail=f'could not validate credential',
+                                         headers={'WWW.Authenticate' : 'bearer'})
+    return verify_access_token(token, credential_exception)
