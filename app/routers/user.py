@@ -15,8 +15,12 @@ router = APIRouter(
 async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     """
     Endpoint for the creating new user for user the site.
+    
+    
     - **email** - User email for registering the db.
     - **password** - User password for accessing the site.
+    
+    
     Returns the email,id,created_at object.
     """
     # hashed the password
@@ -38,7 +42,11 @@ async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 async def get_user(id: int, db: Session = Depends(get_db)):
     """
     User endpoint for getting the user using the id.
+    
+    
     - **id** : User id for the query.
+    
+    
     Returns the user object from the db.
     """
     # query the db model for the specific user

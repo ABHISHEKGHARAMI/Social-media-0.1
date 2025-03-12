@@ -28,7 +28,11 @@ async def get_posts(db: Session = Depends(get_db)):
 async def get_post(id: int, db: Session = Depends(get_db)):
     """
     This is the endpoint for getting the post using the id.
+    
+    
     - **id** : Post id to get the post.
+    
+    
     Returns all the post.
     """
     # post = post_by_id(id)
@@ -48,7 +52,11 @@ async def get_post(id: int, db: Session = Depends(get_db)):
 async def create_post(post: schemas.PostCreate, db: Session = Depends(get_db),user_id :int = Depends(oauth2.get_current_user)):
     """
     This is the endpoint for the creating a new post,but for that user have to authorize for that.
+    
+    
     - All the data should be in the body.
+    
+    
     Returns the newly created object for the post.
     """
     # storing the post for the user
@@ -78,7 +86,11 @@ async def create_post(post: schemas.PostCreate, db: Session = Depends(get_db),us
 async def delete_post(id: int,  db: Session = Depends(get_db), user_id: int = Depends(oauth2.get_current_user)):
     """
     Delete Post endpoint for delete post. For that user should be authorized.
+    
+    
     - **id** : Post id  for the delete
+    
+    
     Returns the status code for the delete.
     """
     # post = post_by_id(id)
@@ -104,7 +116,11 @@ async def delete_post(id: int,  db: Session = Depends(get_db), user_id: int = De
 async def update_post(id: int, updated_post: schemas.PostCreate, db: Session = Depends(get_db), user_id: int = Depends(oauth2.get_current_user)):
     """
     Update Post endpoint for the post . For that user should be authorized.
+    
+    
     - **id** : Post id for the authorized.
+    
+    
     Returns for the updated post object.
     """
     # index = post_index(id)
