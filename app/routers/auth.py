@@ -10,7 +10,7 @@ router = APIRouter(
 )
 
 # user login
-@router.post('/login')
+@router.post('/login', response_model = schemas.Token)
 async def login( user_credential : OAuth2PasswordRequestForm = Depends() ,db : Session = Depends(get_db)):
     # accessing the database
     user = db.query(models.User).filter(models.User.email == user_credential.username).first()
