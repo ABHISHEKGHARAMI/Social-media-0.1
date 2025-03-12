@@ -49,7 +49,7 @@ async def get_post(id: int, db: Session = Depends(get_db)):
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=schemas.Post)
-async def create_post(post: schemas.PostCreate, db: Session = Depends(get_db),user_id :int = Depends(oauth2.get_current_user)):
+async def create_post(post: schemas.PostCreate, db: Session = Depends(get_db), current_user :int = Depends(oauth2.get_current_user)):
     """
     This is the endpoint for the creating a new post,but for that user have to authorize for that.
     
@@ -83,7 +83,7 @@ async def create_post(post: schemas.PostCreate, db: Session = Depends(get_db),us
 
 # delete a post from the user
 @router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
-async def delete_post(id: int,  db: Session = Depends(get_db), user_id: int = Depends(oauth2.get_current_user)):
+async def delete_post(id: int,  db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
     """
     Delete Post endpoint for delete post. For that user should be authorized.
     
@@ -113,7 +113,7 @@ async def delete_post(id: int,  db: Session = Depends(get_db), user_id: int = De
 
 # this is put update for the user post
 @router.put('/{id}', response_model=schemas.Post)
-async def update_post(id: int, updated_post: schemas.PostCreate, db: Session = Depends(get_db), user_id: int = Depends(oauth2.get_current_user)):
+async def update_post(id: int, updated_post: schemas.PostCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
     """
     Update Post endpoint for the post . For that user should be authorized.
     
@@ -146,5 +146,7 @@ async def update_post(id: int, updated_post: schemas.PostCreate, db: Session = D
     post_query.update(updated_post.dict(),  synchronize_session=False)
 
     db.commit()
+    
+    print(current_user.email)
 
     return post_query.first()
