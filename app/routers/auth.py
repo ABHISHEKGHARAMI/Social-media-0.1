@@ -13,6 +13,14 @@ router = APIRouter(
 @router.post('/login', response_model = schemas.Token)
 async def login( user_credential : OAuth2PasswordRequestForm = Depends() ,db : Session = Depends(get_db)):
     # accessing the database
+    """
+    This endpoint allows users to login by providing their username and password.
+
+    - **username**: The registered email address of the user.
+    - **password**: The associated password for the account.
+
+    Returns an access token that can be used to authenticate further API requests.
+    """
     user = db.query(models.User).filter(models.User.email == user_credential.username).first()
     
     # if user does not exist raise an error
@@ -26,7 +34,7 @@ async def login( user_credential : OAuth2PasswordRequestForm = Depends() ,db : S
         
     # at this point user is valid then request the token will create then return the token
     access_token = oauth2.create_access_token(data={'user_id': user.id})
-    return {'token': access_token ,'token_type' : 'bearer'}
+    return {'access_token': access_token, 'token_type': 'bearer'}
     
         
     

@@ -17,7 +17,18 @@ from .routers import user, post , auth
 models.Base.metadata.create_all(bind=engine)
 
 
-app = FastAPI()
+app = FastAPI(
+    title = 'Social Media API',
+    description="This API allows users to register, login, create posts, and interact with other users.",
+    version="1.0.0",
+    contact={
+        "name": "Abhishek Gharami",
+        "email": "abhishekgharami1998@gmail.com",
+    },
+    license_info={
+        "name": "MIT License",
+    },
+)
        
        
        
