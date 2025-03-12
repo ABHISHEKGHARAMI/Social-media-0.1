@@ -15,6 +15,9 @@ router = APIRouter(
 async def get_posts(db: Session = Depends(get_db)):
     # cursor.execute(""" SELECT * FROM posts """)
     # post = cursor.fetchall()
+    """
+      This is the endpoint for getting all the post for the user.
+    """
     post = db.query(models.Post).all()
     # print(post)
     return post
@@ -23,6 +26,10 @@ async def get_posts(db: Session = Depends(get_db)):
 # getting the post using the id
 @router.get('/{id}', response_model=schemas.Post)
 async def get_post(id: int, db: Session = Depends(get_db)):
+    """
+    This is the endpoint for getting the post using the id.
+    - **id** : post id to get the post.
+    """
     # post = post_by_id(id)
     # cursor.execute("""SELECT * FROM posts WHERE id = %s""",(str(id)))
     # post = cursor.fetchone()
