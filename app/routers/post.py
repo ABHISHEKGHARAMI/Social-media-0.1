@@ -28,7 +28,8 @@ async def get_posts(db: Session = Depends(get_db)):
 async def get_post(id: int, db: Session = Depends(get_db)):
     """
     This is the endpoint for getting the post using the id.
-    - **id** : post id to get the post.
+    - **id** : Post id to get the post.
+    Returns all the post.
     """
     # post = post_by_id(id)
     # cursor.execute("""SELECT * FROM posts WHERE id = %s""",(str(id)))
@@ -45,6 +46,11 @@ async def get_post(id: int, db: Session = Depends(get_db)):
 
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=schemas.Post)
 async def create_post(post: schemas.PostCreate, db: Session = Depends(get_db),user_id :int = Depends(oauth2.get_current_user)):
+    """
+    This is the endpoint for the creating a new post,but for that user have to authorize for that.
+    - All the data should be in the body.
+    Returns the newly created object for the post.
+    """
     # storing the post for the user
     # new_post = post.dict()
     # new_post['id'] = randrange(0,100000000)
@@ -70,6 +76,11 @@ async def create_post(post: schemas.PostCreate, db: Session = Depends(get_db),us
 # delete a post from the user
 @router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_post(id: int,  db: Session = Depends(get_db), user_id: int = Depends(oauth2.get_current_user)):
+    """
+    Delete Post endpoint for delete post. For that user should be authorized.
+    - **id** : Post id  for the delete
+    Returns the status code for the delete.
+    """
     # post = post_by_id(id)
     # index = post_index(id)
     # cursor.execute(""" DELETE FROM posts WHERE id = %s RETURNING * """, (str(id),))
@@ -91,6 +102,11 @@ async def delete_post(id: int,  db: Session = Depends(get_db), user_id: int = De
 # this is put update for the user post
 @router.put('/{id}', response_model=schemas.Post)
 async def update_post(id: int, updated_post: schemas.PostCreate, db: Session = Depends(get_db), user_id: int = Depends(oauth2.get_current_user)):
+    """
+    Update Post endpoint for the post . For that user should be authorized.
+    - **id** : Post id for the authorized.
+    Returns for the updated post object.
+    """
     # index = post_index(id)
     # cursor.execute(""" UPDATE posts SET title=%s , content=%s , published=%s WHERE id = %s RETURNING * """,
     #                (post.title,post.content,post.published,str(id)))
