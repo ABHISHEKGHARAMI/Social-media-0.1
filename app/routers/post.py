@@ -23,6 +23,18 @@ async def get_posts(db: Session = Depends(get_db)):
     return post
 
 
+@router.get('/my_posts', response_model=List[schemas.Post])
+async def get_user_posts(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+    """
+    Get all posts created by the authenticated user.
+    - Requires authentication.
+    - Uses the current user's ID from the OAuth2 token.
+    """
+    posts = db.query(models.Post).filter(
+        models.Post.owner_id == current_user.id).all()
+    return posts
+
+
 # # this is the endpoint for user specific posts
 # @router.get('/userPost',response_model=List[schemas.Post])
 # async def get_user_post(db : Session = Depends(get_db), current_user = oauth2.get_current_user):
