@@ -21,6 +21,7 @@ class Post(PostBase):
     # content : str
     # published : bool
     created_at : datetime
+    owner_id : int
     
     class Config:
         from_attributes = True  # Replaces `orm_mode = True` in Pydantic v2
