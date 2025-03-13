@@ -73,8 +73,9 @@ async def create_post(post: schemas.PostCreate, db: Session = Depends(get_db), c
 
     # creating new post
     # new_post = models.Post(title=post.title,content=post.content,published=post.published)
-    new_post = models.Post(**post.dict())
+    new_post = models.Post(owner_id=current_user.id, **post.dict())
     # saving the instance of the data to the db
+    
     db.add(new_post)
     db.commit()
     db.refresh(new_post)
@@ -106,6 +107,11 @@ async def delete_post(id: int,  db: Session = Depends(get_db), current_user: int
                             detail=f'the post with {id} not found to delete!!!')
     # all_posts.pop(index)
     # delete the post
+    # for deleting the post user must delete its own post 
+    # unless superuser or stuff user logic is implemented
+    if deleted_post.first().owner_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                            detail="user can delete  own post!!")
     deleted_post.delete(synchronize_session=False)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -143,6 +149,12 @@ async def update_post(id: int, updated_post: schemas.PostCreate, db: Session = D
     # return Response(status_code=status.HTTP_205_RESET_CONTENT)
     # print(post)
     # print(updated_data)
+    # logic for checking the user
+    if post.owner_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                            detail="user should delete own post!!")
+        # we try to implement the different roles for user then
+        # can delete the posts according to the roles.
     post_query.update(updated_post.dict(),  synchronize_session=False)
 
     db.commit()
