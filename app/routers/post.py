@@ -12,26 +12,30 @@ router = APIRouter(
 )
 # getting the all the post
 @router.get('/', response_model=List[schemas.Post])
-async def get_posts(db: Session = Depends(get_db)):
+async def get_posts(db: Session = Depends(get_db),limit : int = 10):
     # cursor.execute(""" SELECT * FROM posts """)
     # post = cursor.fetchall()
     """
       This is the endpoint for getting all the post for the user.
     """
-    post = db.query(models.Post).all()
+    # query parameter for the post
+    
+    post = db.query(models.Post).limit(limit).all()
     # print(post)
     return post
 
 
 @router.get('/my_posts', response_model=List[schemas.Post])
-async def get_user_posts(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+async def get_user_posts(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user),
+                         limit : int = 10):
+    # query parameter for the user to set the limit
     """
     Get all posts created by the authenticated user.
     - Requires authentication.
     - Uses the current user's ID from the OAuth2 token.
     """
     posts = db.query(models.Post).filter(
-        models.Post.owner_id == current_user.id).all()
+        models.Post.owner_id == current_user.id).limit(limit).all()
     return posts
 
 
