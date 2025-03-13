@@ -2,6 +2,7 @@
 from sqlalchemy import Column , Integer , String , Boolean , TIMESTAMP , ForeignKey
 from .database import Base
 from sqlalchemy.sql import text , func
+from sqlalchemy.orm import relationship
 
 # model for the Post
 class Post(Base):
@@ -17,6 +18,9 @@ class Post(Base):
     
     # setting up the foreign  key for the user
     owner_id = Column(Integer,ForeignKey("users.id",ondelete="CASCADE"),nullable=False)
+    
+    # fetching some information about the user for who created the post
+    owner  = relationship("User")
     
     
     

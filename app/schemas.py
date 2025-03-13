@@ -14,6 +14,14 @@ class PostBase(BaseModel):
 class PostCreate(PostBase):
     pass
 
+# response schema for the user
+
+
+class UserOut(BaseModel):
+    id: int
+    email: EmailStr
+    created_at: datetime
+
 # designing the response back for the user to restrict the user to get extra information
 class Post(PostBase):
     id : int
@@ -22,6 +30,7 @@ class Post(PostBase):
     # published : bool
     created_at : datetime
     owner_id : int
+    owner : UserOut
     
     class Config:
         from_attributes = True  # Replaces `orm_mode = True` in Pydantic v2
@@ -33,11 +42,7 @@ class UserCreate(BaseModel):
     email : EmailStr
     password : str
     
-# response schema for the user
-class UserOut(BaseModel):
-    id : int
-    email : EmailStr
-    created_at : datetime
+
     
 # schema for the user login
 class UserLogin(BaseModel):
