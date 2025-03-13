@@ -23,6 +23,16 @@ async def get_posts(db: Session = Depends(get_db)):
     return post
 
 
+# # this is the endpoint for user specific posts
+# @router.get('/userPost',response_model=List[schemas.Post])
+# async def get_user_post(db : Session = Depends(get_db), current_user = oauth2.get_current_user):
+#     """
+#     This is the endpoint for the getting the user written or published so far
+#     we collect user from the database using the id.
+#     """
+#     posts = db.query(models.Post).filter(models.Post.owner_id == int(current_user.id)).all()
+#     return posts
+
 # getting the post using the id
 @router.get('/{id}', response_model=schemas.Post)
 async def get_post(id: int, db: Session = Depends(get_db)):
