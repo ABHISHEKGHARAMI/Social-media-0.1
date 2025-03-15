@@ -1,13 +1,7 @@
-from fastapi import FastAPI , status , Response , HTTPException , Depends
-from pydantic import BaseModel
-from typing import Optional , List
-from random import randrange
-from sqlalchemy.orm import Session
-import psycopg2
-from psycopg2.extras import RealDictCursor
-import time
-from . import models , schemas , utils
-from .database import engine , SessionLocal
+from fastapi import FastAPI 
+
+from . import models 
+from .database import engine 
 from .routers import user, post , auth
 
 
@@ -39,18 +33,6 @@ app = FastAPI(
 all_posts = []
 
 
-# build the connection for the database
-while True:
-    try:
-        conn = psycopg2.connect(host='localhost',database='fastapi',
-                                user='postgres',password='Abhi1998@',
-                                cursor_factory=RealDictCursor)
-        cursor = conn.cursor()
-        print('database connection success')
-        break
-    except Exception as error:
-        print(f'connection error : {error}')
-        time.sleep(2)
 
 
 # # function for the getting the post index id
