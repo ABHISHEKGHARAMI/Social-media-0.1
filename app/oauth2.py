@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 # 1 . secret key
 # 2 . Algorithm
 # 3 . time for automatically signed out
+# all this should be moved to the env file
 oauth2_schema = OAuth2PasswordBearer(tokenUrl='/login')
 
 SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
