@@ -1,4 +1,4 @@
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 # class for the config for credentials for different things
 class Settings(BaseSettings):
