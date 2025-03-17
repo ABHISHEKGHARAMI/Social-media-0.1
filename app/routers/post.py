@@ -12,7 +12,7 @@ router = APIRouter(
     tags = ['Post']
 )
 # getting the all the post
-@router.get('/', response_model=List[schemas.Post])
+@router.get('/', response_model=List[schemas.PostOut])
 async def get_posts(db: Session = Depends(get_db),limit : int = 10, skip : int = 0, search : Optional[str] = ""):
     # cursor.execute(""" SELECT * FROM posts """)
     # post = cursor.fetchall()
@@ -26,7 +26,7 @@ async def get_posts(db: Session = Depends(get_db),limit : int = 10, skip : int =
     # result for count the vote of the posts
     result = db.query(models.Post, 
                       func.count(models.Vote.post_id).label('votes')).join(models.Vote,models.Vote.post_id == models.Post.id,
-                                        isouter=True).group_by(models.Post.id).all()
+                                        isouter=True).group_by(models.Post.id).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all()
     return result
 
 

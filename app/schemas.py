@@ -37,6 +37,15 @@ class Post(PostBase):
         from_attributes = True  # Replaces `orm_mode = True` in Pydantic v2
         extra = "ignore"
         
+# creating the post schema with the vote result
+class PostOut(BaseModel):
+    Post : Post
+    votes : int
+    
+    class Config:
+        from_attributes = True  # Replaces `orm_mode = True` in Pydantic v2
+        extra = "ignore"
+        
         
 # create the user for the application
 class UserCreate(BaseModel):
