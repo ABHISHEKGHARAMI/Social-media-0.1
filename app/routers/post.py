@@ -2,6 +2,7 @@ from .. import models, schemas , oauth2
 from fastapi import FastAPI, status, Response, HTTPException, Depends , APIRouter
 from typing import Optional, List
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from ..database import engine , get_db
 
 
@@ -22,7 +23,11 @@ async def get_posts(db: Session = Depends(get_db),limit : int = 10, skip : int =
     
     post = db.query(models.Post).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all()
     # print(post)
-    return post
+    # result for count the vote of the posts
+    result = db.query(models.Post, 
+                      func.count(models.Vote.post_id).label('votes')).join(models.Vote,models.Vote.post_id == models.Post.id,
+                                        isouter=True).group_by(models.Post.id).all()
+    return result
 
 
 @router.get('/my_posts', response_model=List[schemas.Post])
