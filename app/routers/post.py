@@ -21,16 +21,16 @@ async def get_posts(db: Session = Depends(get_db),limit : int = 10, skip : int =
     """
     # query parameter for the post
     
-    post = db.query(models.Post).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all()
+    # post = db.query(models.Post).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all()
     # print(post)
     # result for count the vote of the posts
-    result = db.query(models.Post, 
+    posts = db.query(models.Post, 
                       func.count(models.Vote.post_id).label('votes')).join(models.Vote,models.Vote.post_id == models.Post.id,
                                         isouter=True).group_by(models.Post.id).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all()
-    return result
+    return posts
 
 
-@router.get('/my_posts', response_model=List[schemas.Post])
+@router.get('/my_posts', response_model=List[schemas.PostOut])
 async def get_user_posts(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user),
                          limit : int = 10, skip : int = 0 , search : Optional[str] = ""):
     # query parameter for the user to set the limit
@@ -39,7 +39,9 @@ async def get_user_posts(db: Session = Depends(get_db), current_user: int = Depe
     - Requires authentication.
     - Uses the current user's ID from the OAuth2 token.
     """
-    posts = db.query(models.Post).filter(
+    posts = db.query(models.Post,
+                     func.count(models.Vote.post_id).label('votes')).join(models.Vote, models.Vote.post_id == models.Post.id,
+                                                                          isouter=True).group_by(models.Post.id).filter(
         models.Post.owner_id == current_user.id).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all()
     return posts
 
@@ -55,7 +57,7 @@ async def get_user_posts(db: Session = Depends(get_db), current_user: int = Depe
 #     return posts
 
 # getting the post using the id
-@router.get('/{id}', response_model=schemas.Post)
+@router.get('/{id}', response_model=schemas.PostOut)
 async def get_post(id: int, db: Session = Depends(get_db)):
     """
     This is the endpoint for getting the post using the id.
@@ -69,7 +71,9 @@ async def get_post(id: int, db: Session = Depends(get_db)):
     # post = post_by_id(id)
     # cursor.execute("""SELECT * FROM posts WHERE id = %s""",(str(id)))
     # post = cursor.fetchone()
-    post = db.query(models.Post).filter(models.Post.id == id).first()
+    post = db.query(models.Post,
+                    func.count(models.Vote.post_id).label('votes')).join(models.Vote, models.Vote.post_id == models.Post.id,
+                                                                         isouter=True).group_by(models.Post.id).filter(models.Post.id == id).first()
     if post is None:
         # response.status_code = status.HTTP_404_NOT_FOUND
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
