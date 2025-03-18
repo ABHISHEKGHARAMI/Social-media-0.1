@@ -1,4 +1,5 @@
 from fastapi import FastAPI 
+from fastapi.middleware.cors import CORSMiddleware
 
 from . import models 
 from .database import engine 
@@ -10,6 +11,8 @@ from .config import settings
 
 # declaring the connection for the alchemy
 models.Base.metadata.create_all(bind=engine)
+
+origins = ["*"]
 
 
 app = FastAPI(
@@ -23,6 +26,14 @@ app = FastAPI(
     license_info={
         "name": "MIT License",
     },
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
        
        
